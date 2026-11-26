@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bilangan Bulat - Presentasi Interaktif</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .presentation {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 60px;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .slide.active {
+            display: flex;
+            opacity: 1;
+            animation: slideIn 0.6s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Header */
+        .slide-header {
+            position: absolute;
+            top: 30px;
+            left: 50px;
+            font-size: 14px;
+            color: #94a3b8;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        .slide-number {
+            position: absolute;
+            top: 30px;
+            right: 50px;
+            font-size: 14px;
+            color: #64748b;
+            background: #1e293b;
+            padding: 6px 14px;
+            border-radius: 20px;
+        }
+
+        /* Title Slide */
+        .title-slide h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 72px;
+            font-weight: 700;
+            background: linear-gradient(90deg, #38bdf8, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .title-slide .subtitle {
+            font-size: 24px;
+            color: #94a3b8;
+            margin-bottom: 40px;
+        }
+
+        .title-slide .badge {
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            color: white;
+            padding: 10px 28px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        /* Content */
+        h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            background: linear-gradient(90deg, #38bdf8, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+
+        .content {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .definition-box {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid #334155;
+            border-radius: 20px;
+            padding: 30px 40px;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 22px;
+            line-height: 1.6;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .highlight {
+            color: #38bdf8;
+            font-weight: 600;
+        }
+
+        /* Cards Grid */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: rgba(30, 41, 59, 0.9);
+            border: 1px solid #334155;
+            border-radius: 16px;
+            padding: 25px 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: #38bdf8;
+            box-shadow: 0 15px 30px rgba(56, 189, 248, 0.15);
+        }
+
+        .card .icon {
+            font-size: 36px;
+            margin-bottom: 12px;
+        }
+
+        .card h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #f1f5f9;
+        }
+
+        .card p {
+            font-size: 14px;
+            color: #94a3b8;
+            line-height: 1.5;
+        }
+
+        /* Number Line */
+        .number-line {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .num {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 18px;
+            transition: all 0.3s;
+        }
+
+        .num.negative {
+            background: #7f1d1d;
+            color: #fca5a5;
+        }
+
+        .num.zero {
+            background: #1e3a5f;
+            color: #38bdf8;
+            transform: scale(1.15);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+        }
+
+        .num.positive {
+            background: #14532d;
+            color: #86efac;
+        }
+
+        /* Operations */
+        .ops-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .op-card {
+            background: rgba(30, 41, 59, 0.9);
+            border-radius: 16px;
+            padding: 25px;
+            border-left: 5px solid;
+        }
+
+        .op-card.add { border-color: #22c55e; }
+        .op-card.sub { border-color: #ef4444; }
+        .op-card.mul { border-color: #3b82f6; }
+        .op-card.div { border-color: #a855f7; }
+
+        .op-card h3 {
+            font-size: 20px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .op-card .example {
+            background: #0f172a;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 18px;
+            margin-top: 10px;
+            color: #e2e8f0;
+        }
+
+        /* Properties */
+        .props {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .prop {
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 14px;
+            padding: 22px;
+            border: 1px solid #334155;
+        }
+
+        .prop h4 {
+            color: #38bdf8;
+            margin-bottom: 8px;
+            font-size: 18px;
+        }
+
+        .prop p {
+            color: #94a3b8;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        .nav button {
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: #e2e8f0;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav button:hover {
+            background: #38bdf8;
+            color: #0f172a;
+            border-color: #38bdf8;
+            transform: scale(1.1);
+        }
+
+        .progress {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #38bdf8, #818cf8);
+            transition: width 0.4s ease;
+            z-index: 100;
+        }
+
+        /* Fun Facts */
+        .fun-box {
+            background: linear-gradient(135deg, #1e3a5f, #312e81);
+            border-radius: 20px;
+            padding: 30px 40px;
+            text-align: center;
+            max-width: 700px;
+            border: 1px solid #3b82f6;
+        }
+
+        .fun-box .emoji {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .title-slide h1 { font-size: 42px; }
+            h2 { font-size: 28px; }
+            .cards { grid-template-columns: 1fr; }
+            .ops-grid, .props { grid-template-columns: 1fr; }
+            .slide { padding: 30px 25px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <!-- SLIDE 1: Title -->
+        <div class="slide active title-slide">
+            <div class="slide-header">MATEMATIKA DASAR</div>
+            <div class="slide-number">01 / 08</div>
+            <h1>Bilangan Bulat</h1>
+            <p class="subtitle">Mengenal Dunia Angka dari Negatif hingga Positif</p>
+            <div class="badge">Presentasi Interaktif</div>
+        </div>
+
+        <!-- SLIDE 2: Pengertian -->
+        <div class="slide">
+            <div class="slide-header">BILANGAN BULAT</div>
+            <div class="slide-number">02 / 08</div>
+            <h2>Apa itu Bilangan Bulat?</h2>
+            <div class="content">
+                <div class="definition-box">
+                    Bilangan bulat adalah himpunan bilangan yang terdiri dari<br>
+                    <span class="highlight">bilangan negatif</span>, <span class="highlight">nol</span>, dan <span class="highlight">bilangan positif</span>
+                </div>
+                <div class="number-line">
+                    <div class="num negative">-4</div>
+                    <div class="num negative">-3</div>
+                    <div class="num negative">-2</div>
+                    <div class="num negative">-1</div>
+                    <div class="num zero">0</div>
+                    <div class="num positive">1</div>
+                    <div class="num positive">2</div>
+                    <div class="num positive">3</div>
+                    <div class="num positive">4</div>
+                </div>
+                <p style="text-align:center; color:#94a3b8; margin-top:15px;">
+                    Dinotasikan dengan simbol <strong style="color:#38bdf8;">ℤ</strong>
+                </p>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: Jenis-jenis -->
+        <div class="slide">
+            <div class="slide-header">JENIS-JENIS</div>
+            <div class="slide-number">03 / 08</div>
+            <h2>Jenis-jenis Bilangan Bulat</h2>
+            <div class="content">
+                <div class="cards">
+                    <div class="card">
+                        <div class="icon">➖</div>
+                        <h3>Bilangan Negatif</h3>
+                        <p>..., -5, -4, -3, -2, -1<br>Berada di kiri nol</p>
+                    </div>
+                    <div class="card">
+                        <div class="icon">⚪</div>
+                        <h3>Nol (0)</h3>
+                        <p>Bukan positif maupun negatif.<br>Titik tengah garis bilangan</p>
+                    </div>
+                    <div class="card">
+                        <div class="icon">➕</div>
+                        <h3>Bilangan Positif</h3>
+                        <p>1, 2, 3, 4, 5, ...<br>Berada di kanan nol</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: Operasi Penjumlahan & Pengurangan -->
+        <div class="slide">
+            <div class="slide-header">OPERASI HITUNG</div>
+            <div class="slide-number">04 / 08</div>
+            <h2>Penjumlahan & Pengurangan</h2>
+            <div class="content">
+                <div class="ops-grid">
+                    <div class="op-card add">
+                        <h3>➕ Penjumlahan</h3>
+                        <p style="color:#94a3b8; margin-bottom:10px;">Tanda sama → jumlahkan & ikuti tanda</p>
+                        <div class="example">(+5) + (+3) = +8</div>
+                        <div class="example">(-4) + (-6) = -10</div>
+                        <div class="example">(+7) + (-3) = +4</div>
+                    </div>
+                    <div class="op-card sub">
+                        <h3>➖ Pengurangan</h3>
+                        <p style="color:#94a3b8; margin-bottom:10px;">a - b = a + (-b)</p>
+                        <div class="example">(+8) - (+3) = +5</div>
+                        <div class="example">(-5) - (+2) = -7</div>
+                        <div class="example">(+4) - (-6) = +10</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 5: Perkalian & Pembagian -->
+        <div class="slide">
+            <div class="slide-header">OPERASI HITUNG</div>
+            <div class="slide-number">05 / 08</div>
+            <h2>Perkalian & Pembagian</h2>
+            <div class="content">
+                <div class="ops-grid">
+                    <div class="op-card mul">
+                        <h3>✖️ Perkalian</h3>
+                        <p style="color:#94a3b8; margin-bottom:10px;">Tanda sama → positif<br>Tanda beda → negatif</p>
+                        <div class="example">(+4) × (+3) = +12</div>
+                        <div class="example">(-5) × (-2) = +10</div>
+                        <div class="example">(+6) × (-3) = -18</div>
+                    </div>
+                    <div class="op-card div">
+                        <h3>➗ Pembagian</h3>
+                        <p style="color:#94a3b8; margin-bottom:10px;">Aturan tanda sama seperti perkalian</p>
+                        <div class="example">(+12) ÷ (+3) = +4</div>
+                        <div class="example">(-20) ÷ (-4) = +5</div>
+                        <div class="example">(+15) ÷ (-5) = -3</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: Sifat-sifat -->
+        <div class="slide">
+            <div class="slide-header">SIFAT-SIFAT</div>
+            <div class="slide-number">06 / 08</div>
+            <h2>Sifat-sifat Bilangan Bulat</h2>
+            <div class="content">
+                <div class="props">
+                    <div class="prop">
+                        <h4>Komutatif</h4>
+                        <p>a + b = b + a<br>a × b = b × a</p>
+                    </div>
+                    <div class="prop">
+                        <h4>Asosiatif</h4>
+                        <p>(a + b) + c = a + (b + c)<br>(a × b) × c = a × (b × c)</p>
+                    </div>
+                    <div class="prop">
+                        <h4>Distributif</h4>
+                        <p>a × (b + c) = (a × b) + (a × c)</p>
+                    </div>
+                    <div class="prop">
+                        <h4>Identitas</h4>
+                        <p>a + 0 = a<br>a × 1 = a</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 7: Contoh Soal -->
+        <div class="slide">
+            <div class="slide-header">LATIHAN</div>
+            <div class="slide-number">07 / 08</div>
+            <h2>Contoh Soal</h2>
+            <div class="content">
+                <div class="ops-grid">
+                    <div class="op-card add">
+                        <h3>Soal 1</h3>
+                        <p style="color:#94a3b8;">Hitung: (-12) + 8 - (-5)</p>
+                        <div class="example">= -12 + 8 + 5 = <strong style="color:#22c55e;">+1</strong></div>
+                    </div>
+                    <div class="op-card mul">
+                        <h3>Soal 2</h3>
+                        <p style="color:#94a3b8;">Hitung: (-6) × 4 ÷ (-3)</p>
+                        <div class="example">= -24 ÷ (-3) = <strong style="color:#22c55e;">+8</strong></div>
+                    </div>
+                </div>
+                <div style="margin-top:25px; text-align:center; color:#94a3b8;">
+                    Tips: Kerjakan dari kiri ke kanan sesuai urutan operasi!
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 8: Penutup -->
+        <div class="slide">
+            <div class="slide-header">KESIMPULAN</div>
+            <div class="slide-number">08 / 08</div>
+            <h2>Kesimpulan</h2>
+            <div class="content" style="display:flex; justify-content:center;">
+                <div class="fun-box">
+                    <div class="emoji">🎯</div>
+                    <p style="font-size:20px; line-height:1.7; margin-bottom:20px;">
+                        Bilangan bulat mencakup semua bilangan negatif, nol, dan positif.<br>
+                        Memahami operasinya sangat penting dalam kehidupan sehari-hari!
+                    </p>
+                    <p style="color:#38bdf8; font-weight:600; font-size:18px;">
+                        Terima kasih telah belajar bersama! ✨
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav">
+        <button onclick="prevSlide()">←</button>
+        <button onclick="nextSlide()">→</button>
+    </div>
+    <div class="progress" id="progress"></div>
+
+    <script>
+        let current = 0;
+        const slides = document.querySelectorAll('.slide');
+        const total = slides.length;
+
+        function showSlide(n) {
+            slides.forEach(s => s.classList.remove('active'));
+            current = (n + total) % total;
+            slides[current].classList.add('active');
+            document.getElementById('progress').style.width = ((current + 1) / total * 100) + '%';
+        }
+
+        function nextSlide() { showSlide(current + 1); }
+        function prevSlide() { showSlide(current - 1); }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+        });
+
+        // Initialize
+        showSlide(0);
+    </script>
+</body>
+</html>
